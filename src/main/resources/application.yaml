@@ -1,0 +1,11 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+  profiles:
+    active: local
+application:
+  name: statementapi

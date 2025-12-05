@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: pg_container
+    restart: always
+    environment:
+      POSTGRES_USER: rootuser
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: statementsdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/statements
+
+# Named volume to persist database data
+volumes:
+  pgdata:
