@@ -19,7 +19,7 @@ public interface AccountStatementRepository extends JpaRepository<AccountStateme
     Optional<AccountStatementEntity> findByDocumentIdAndUserId(Long documentId, UUID userId);
 
     @Transactional(readOnly = true)
-    Optional<AccountStatementEntity> findByStatementChecksum(Byte[] checksum);
+    Optional<AccountStatementEntity> findByStatementChecksum(byte[] checksum);
 
 
 

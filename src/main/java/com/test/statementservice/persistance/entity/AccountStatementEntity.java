@@ -16,9 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Builder
 @Setter
@@ -36,29 +34,22 @@ public class AccountStatementEntity {
     private Long documentId;
 
 
-    @Column(name = "s3_path_key")
-    private String s3StatementPath;
-
     @Column(name = "signed_statement_url")
     private String statementUrl;
 
 
     @Column(name = "file_name")
-    private String statementFileNames;
+    private String statementFileName;
 
     @Column(name = "deleted")
-    private int isDeleted;
-
-
-    @Column(name = "user_id")
-    private UUID userId;
+    private boolean isDeleted;
 
     @Lob //For mapping as binary obj -> bytea
     @Column(name = "checksum", unique = true)
     private byte[] statementChecksum;
 
     @Column(name = "user_id", unique = true)
-    private UUID user_id;
+    private String userId;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;
