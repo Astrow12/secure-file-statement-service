@@ -37,6 +37,9 @@ public class AccountStatementEntity {
     @Column(name = "signed_statement_url")
     private String statementUrl;
 
+    @Column(name = "upload_status")
+    private String fileUploadStatus;
+
 
     @Column(name = "file_name")
     private String statementFileName;

@@ -41,7 +41,7 @@ public class StatementServiceImpl implements StatementService {
     private EntityManager entityManager;
 
 
-    @Transactional(rollbackFor = S3IntegrationException.class)
+    @Transactional
     public MessageResponse uploadAccountStatement(String fileOwner, MultipartFile statementFile) {
         log.info("Uploading statement from user: {}", userStore.getUserName());
         try {
@@ -53,9 +53,11 @@ public class StatementServiceImpl implements StatementService {
                 throw new DuplicateRequestException("File already exists");
             }
             String key = getFileName(fileOwner);
+            accountStatementRepository.save(statementMapper.convertToStatementEntity(
+                    statementMapper.createAccountStatementDto("PENDING",key, statementFile.getName(), checkSum.getBytes(), fileOwner)));
             s3IntegrationService.uploadPdfToS3(key, statementFile.getBytes());
             accountStatementRepository.save(statementMapper.convertToStatementEntity(
-                    statementMapper.createAccountStatementDto(key, statementFile.getName(), checkSum.getBytes(), fileOwner)));
+                    statementMapper.createAccountStatementDto("UPLOADED",key, statementFile.getName(), checkSum.getBytes(), fileOwner)));
             return new MessageResponse("File uploaded successfully: " + key);
 
         } catch (DuplicateRequestException ex) {

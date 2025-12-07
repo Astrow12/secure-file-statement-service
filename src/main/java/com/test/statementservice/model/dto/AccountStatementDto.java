@@ -13,6 +13,7 @@ public class AccountStatementDto {
     private String statementUrl;
     private String statementFileName;
     private boolean isDeleted;
+    private String fileUploadStatus;
     private String userId;
     private byte[] statementChecksum;
 

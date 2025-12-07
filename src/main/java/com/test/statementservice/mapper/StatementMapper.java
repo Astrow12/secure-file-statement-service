@@ -11,11 +11,12 @@ public interface StatementMapper {
 
     AccountStatementEntity convertToStatementEntity(AccountStatementDto accountStatementDto);
 
-    default AccountStatementDto createAccountStatementDto( String fileName, String statementUrl, byte[] statementCheckSum, String userId) {
+    default AccountStatementDto createAccountStatementDto(String status, String fileName, String statementUrl, byte[] statementCheckSum, String userId) {
 
         return AccountStatementDto.builder()
                 .userId(userId)
                 .statementFileName(fileName)
+                .fileUploadStatus(status)
                 .statementChecksum(statementCheckSum)
                 .isDeleted(false)
                 .statementUrl(statementUrl)
