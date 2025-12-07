@@ -1,11 +1,9 @@
 package com.test.statementservice.service;
 
-import com.test.statementservice.model.request.StatementRequest;
 import com.test.statementservice.model.response.MessageResponse;
-import com.test.statementservice.model.response.DocumentResponse;
-
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface StatementService {
 
+    MessageResponse uploadAccountStatement(String fileOwner, MultipartFile statementFile);
 }

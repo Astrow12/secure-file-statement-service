@@ -5,7 +5,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: https:supabase.co/auth/v1/certs #supabase
+          jwk-set-uri: https://vmfsbcgqujxhbedjlzhk.supabase.co/auth/v1/certs #supabase
   datasource:
     url: jdbc:postgresql://localhost:3306/statementsdb
     driver-class-name: org.postgresql.Driver
@@ -31,7 +31,14 @@ spring:
     schema: statementsdb
     baseline-on-migrate: true
 
-statementapi:
+statement:
+  s3-integration:
+    endpoint: "https://vmfsbcgqujxhbedjlzhk.storage.supabase.co/storage/v1/s3"   # Must be s3 endpoint
+    region: "us-east-1"                                         # Supabase forces us-east-1
+    access-key: "487c261456c020f16e137f5934c6cc4f"
+    secret-key: "da779bb492a8586e42634639430107650010fa32c2322f2e62ee16dd27d307d1"
+    bucket: "account-statements"
+    signed-expiration: PT2H
   all-words:
     word-limit: 1000
   word-limit: 10

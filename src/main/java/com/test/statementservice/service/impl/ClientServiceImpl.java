@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ClientServiceImpl implements ClientService {
+
+    @Value("${statement.s3-integration.signed-expiration}")
+    private Duration expirationDate;
 
     private final AccountStatementRepository accountStatementRepository;
 
