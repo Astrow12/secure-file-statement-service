@@ -1,6 +1,13 @@
 server:
   port: 9192
 spring:
+  cache:
+    type: caffeine
+  caffeine:
+    spec: maximumSize=500,expireAfterWrite=30m
+  threads:
+    virtual:
+      enabled: true
   security:
     oauth2:
       resourceserver:
@@ -39,9 +46,10 @@ statement:
     secret-key: "da779bb492a8586e42634639430107650010fa32c2322f2e62ee16dd27d307d1"
     bucket: "account-statements"
     signed-expiration: PT2H
-  all-words:
-    word-limit: 1000
-  word-limit: 10
+scheduler:
+  cron:
+    delete-pending-uploads: 0 0 * * * * #todo: Please configure to what works for you
+
 
 
 springdoc:

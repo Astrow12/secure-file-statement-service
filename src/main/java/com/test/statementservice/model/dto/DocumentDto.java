@@ -1,6 +1,7 @@
-package com.test.statementservice.model.response;
+package com.test.statementservice.model.dto;
 
 
+import com.test.statementservice.model.response.DocumentResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DocumentResponse {
+public class DocumentDto {
     private Long documentId;
     private String fileName;
 
@@ -28,7 +29,7 @@ public class DocumentResponse {
             return false;
         }
 
-        DocumentResponse that = (DocumentResponse) o;
+        DocumentDto that = (DocumentDto) o;
         return Objects.equals(documentId, that.documentId);
     }
 

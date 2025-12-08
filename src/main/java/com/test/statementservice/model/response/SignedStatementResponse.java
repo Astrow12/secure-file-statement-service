@@ -1,7 +1,6 @@
 package com.test.statementservice.model.response;
 
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +12,8 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientDataResponse {
+public class SignedStatementResponse {
 
-
+    private String signedAccountStatement;
+    private Long documentId;
 }

@@ -1,6 +1,7 @@
 --  Books table
 create table if not exists account_statement (
         id bigint not null auto_increment,
+        s3_path_key varchar(255) not null,
         signed_statement_url varchar(255),
         file_name varchar(255) not null,
         upload_status varchar(50) not null,

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
@@ -48,6 +49,26 @@ public class S3IntegrationServiceImpl implements S3IntegrationService {
             log.error("Internal exception occurred while uploading pdf", ex);
             throw new S3IntegrationException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
+    }
+
+    public boolean deletePdfOnS3(String key) {
+        log.info("Deleting pdf with key: {}", key);
+        boolean deleted = false;
+        try {
+            supabaseS3Client.deleteObject(
+                    DeleteObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(key)
+                            .build());
+            deleted = true;
+        } catch (S3Exception ex) {
+            log.error("Exception occurred while deleting pdf", ex);
+            throw new S3IntegrationException(HttpStatus.resolve(ex.statusCode()), ex.getMessage());
+        } catch (Exception ex) {
+            log.error("Internal exception occurred while deleting pdf", ex);
+            throw new S3IntegrationException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        }
+        return deleted;
     }
 
     public String generateS3SignedUrl(String key, Duration expiry) {

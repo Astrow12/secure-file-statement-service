@@ -1,10 +1,16 @@
 package com.test.statementservice.service.impl;
 
+import com.test.statementservice.enums.UploadStatusEnum;
 import com.test.statementservice.exception.ClientException;
-import com.test.statementservice.model.response.ClientDataResponse;
-import com.test.statementservice.persistance.entity.AccountStatementEntity;
+import com.test.statementservice.exception.DocumentException;
+import com.test.statementservice.mapper.StatementMapper;
+import com.test.statementservice.model.response.SignedStatementResponse;
+import com.test.statementservice.model.response.StatementsResponse;
 import com.test.statementservice.persistance.repository.AccountStatementRepository;
+import com.test.statementservice.s3integration.exception.S3IntegrationException;
+import com.test.statementservice.s3integration.service.S3IntegrationService;
 import com.test.statementservice.service.ClientService;
+import com.test.statementservice.web.UserStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,12 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileNotFoundException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,5 +32,64 @@ public class ClientServiceImpl implements ClientService {
     private Duration expirationDate;
 
     private final AccountStatementRepository accountStatementRepository;
+
+    private final UserStore userStore;
+
+    private final S3IntegrationService s3IntegrationService;
+    private final StatementMapper statementMapper;
+
+
+    @Transactional(readOnly = true)
+    @Cacheable
+    @Override
+    public SignedStatementResponse generateAccountStatementPDF(Long documentId) {
+        log.info("Generating account statement for user: {}", userStore.getUserId());
+        try {
+            var savedAccountStatement = accountStatementRepository.findByDocumentIdAndFileUploadStatus(documentId, UploadStatusEnum.UPLOADED);
+            if (savedAccountStatement.isPresent()) {
+                var signedAccountStatement = s3IntegrationService.generateS3SignedUrl(savedAccountStatement.get().getS3StatementKey(), expirationDate);
+                return new SignedStatementResponse(signedAccountStatement, documentId);
+            } else {
+                log.warn("Document with id {} does not exist", documentId);
+                throw new FileNotFoundException("Document has not been found");
+            }
+
+        } catch (FileNotFoundException ex) {
+            log.error("File does not exist", ex);
+            throw new ClientException(HttpStatus.NOT_FOUND, ex.getMessage());
+        } catch (S3IntegrationException ex) {
+            log.error("Exception occurred in s3Integration", ex);
+            throw new ClientException(ex.getStatus(), ex.getMessage());
+
+        } catch (Exception ex) {
+            log.error("Exception occurred while generating account statement", ex);
+            throw new ClientException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        }
+    }
+
+    @Override
+    public StatementsResponse getAccountStatements(LocalDateTime startDate, LocalDateTime endDate) {
+        log.info("Retrieving account statements for user: {}", userStore.getUserId());
+        try {
+            var startDateWithNoTime = startDate.toLocalDate().atStartOfDay();
+            var endDateWithNoTime = endDate.toLocalDate().atStartOfDay();
+            var savedAccountStatement = accountStatementRepository.findByStatementsForSpecificDuration(userStore.getUserId(), startDateWithNoTime, endDateWithNoTime);
+            if (savedAccountStatement.isPresent() && !savedAccountStatement.get().isEmpty()) {
+                return StatementsResponse.builder()
+                        .documentDtoList(statementMapper.convertToListOfDocumentDto(savedAccountStatement.get()))
+                        .build();
+            } else {
+                log.warn("No account statements uploaded for user {}", userStore.getUserId());
+                return new StatementsResponse();
+            }
+        } catch (S3IntegrationException ex) {
+            log.error("Exception occurred in s3Integration", ex);
+            throw new ClientException(ex.getStatus(), ex.getMessage());
+
+        } catch (Exception ex) {
+            log.error("Exception occurred while generating account statement", ex);
+            throw new ClientException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        }
+    }
 
 }

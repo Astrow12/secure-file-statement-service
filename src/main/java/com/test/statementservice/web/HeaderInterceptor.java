@@ -28,7 +28,6 @@ public class HeaderInterceptor implements HandlerInterceptor {
             rawToken = authHeader.substring(7);
         }
 
-        // Recommended: get userId from SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = null;
 

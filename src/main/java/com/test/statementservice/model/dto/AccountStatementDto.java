@@ -1,6 +1,7 @@
 package com.test.statementservice.model.dto;
 
 
+import com.test.statementservice.enums.UploadStatusEnum;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,8 +13,9 @@ import java.util.UUID;
 public class AccountStatementDto {
     private String statementUrl;
     private String statementFileName;
+    private String s3StatementKey;
     private boolean isDeleted;
-    private String fileUploadStatus;
+    private UploadStatusEnum fileUploadStatus;
     private String userId;
     private byte[] statementChecksum;
 

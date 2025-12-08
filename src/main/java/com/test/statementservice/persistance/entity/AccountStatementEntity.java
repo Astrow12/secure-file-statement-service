@@ -1,6 +1,7 @@
 package com.test.statementservice.persistance.entity;
 
 
+import com.test.statementservice.enums.UploadStatusEnum;
 import com.test.statementservice.persistance.listener.AccountStatementListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,11 +35,14 @@ public class AccountStatementEntity {
     private Long documentId;
 
 
+    @Column(name = "s3_path_key")
+    private String s3StatementKey;
+
     @Column(name = "signed_statement_url")
     private String statementUrl;
 
     @Column(name = "upload_status")
-    private String fileUploadStatus;
+    private UploadStatusEnum fileUploadStatus;
 
 
     @Column(name = "file_name")

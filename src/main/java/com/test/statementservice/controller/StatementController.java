@@ -1,7 +1,7 @@
 package com.test.statementservice.controller;
 
 
-import com.test.statementservice.model.response.MessageResponse;
+import com.test.statementservice.model.response.DocumentResponse;
 import com.test.statementservice.service.StatementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,10 +32,12 @@ public class StatementController {
 
     @PostMapping(path = "/upload-statement", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Upload pdf statement for user")
-    public ResponseEntity<MessageResponse> uploadAccountStatement(final @Valid @RequestParam("file") MultipartFile accountStatement,
-                                                                  final @Valid @NotNull @NotBlank @RequestParam("statementOwner")
-                                                                  String fileOwner) {
+    public ResponseEntity<DocumentResponse> uploadAccountStatement(final @Valid @RequestParam("file") MultipartFile accountStatement,
+                                                                   final @Valid @NotNull @NotBlank @RequestParam("statementOwner")
+                                                                   String fileOwner) {
         log.trace("uploadAccountStatement");
         return ResponseEntity.ok(statementService.uploadAccountStatement(fileOwner, accountStatement));
     }
+
+
 }

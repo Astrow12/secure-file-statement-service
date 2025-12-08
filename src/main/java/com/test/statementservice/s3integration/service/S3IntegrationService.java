@@ -8,5 +8,7 @@ public interface S3IntegrationService {
 
     void uploadPdfToS3(String key, byte[] bytes) throws S3IntegrationException;
 
+    boolean deletePdfOnS3(String key) throws S3IntegrationException;
+
     String generateS3SignedUrl(String key, Duration expiry) throws  S3IntegrationException;
 }

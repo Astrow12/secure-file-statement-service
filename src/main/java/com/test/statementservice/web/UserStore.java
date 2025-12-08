@@ -10,8 +10,5 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserStore {
-
-    private String userContact;
-    private String userName;
     private String userId;
 }
