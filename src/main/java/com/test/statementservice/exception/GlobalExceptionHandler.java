@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 ErrorResponse.builder()
                         .date(OffsetDateTime.now())
-                        .message("Error in statement service")
+                        .message(ex.getMessage())
                         .build(),
                 ex.getStatus());
     }

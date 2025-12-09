@@ -15,4 +15,4 @@ create table if not exists account_statement (
 
 create index user_id_document_id_idx on account_statement(user_id, id);
 
-create unique index account_statement_checksum_idx on account_statement(checksum);
+create index account_statement_checksum_idx on account_statement(checksum);

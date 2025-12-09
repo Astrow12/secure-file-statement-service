@@ -1,6 +1,7 @@
 package com.test.statementservice.controller;
 
 
+import com.test.statementservice.exception.ClientException;
 import com.test.statementservice.model.request.ClientDataRequest;
 import com.test.statementservice.model.response.SignedStatementResponse;
 import com.test.statementservice.model.response.StatementsResponse;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,10 +36,13 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping(path = "/account-statement/list-by-duration", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StatementsResponse> getAccountStatementDocIds(final @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                                                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+    public ResponseEntity<StatementsResponse> getAccountStatementDocIds(final @RequestParam(name = "startDate", required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                                        @RequestParam(name = "endDate", required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         log.trace("getAccountStatementDocIds");
-        return ResponseEntity.ok(clientService.getAccountStatements(startDate, endDate));
+        var startDateWithNoTime = startDate.toLocalDate().atStartOfDay();
+        var endDateWithNoTime = endDate.toLocalDate().atStartOfDay();
+        validateDate(startDateWithNoTime, endDateWithNoTime);
+        return ResponseEntity.ok(clientService.getAccountStatements(startDateWithNoTime, endDateWithNoTime));
     }
 
     @PostMapping(path = "/account-statement/generate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,4 +53,14 @@ public class ClientController {
     }
 
 
+    private void validateDate(LocalDateTime startDate, LocalDateTime endDate) {
+        log.info("Validating date time");
+        if (startDate == null || endDate == null) {
+            log.warn("Date is null");
+        }
+        if (startDate.isAfter(endDate) || startDate.isEqual(endDate)) {
+            log.warn("Start time should be before the end time");
+            throw new ClientException(HttpStatus.BAD_REQUEST, "Invalid date(s)");
+        }
+    }
 }

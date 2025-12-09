@@ -7,6 +7,8 @@ import com.test.statementservice.service.CleanUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +27,11 @@ public class CleanUploadServiceImpl implements CleanUploadService {
     //Used to maintain deletes in horizontal scaled applications
     @Transactional
     @Override
+    @Async
     public void cleanUpPendingUploads() {
         log.info("Deleting all pending uploads as per schedule");
         try {
-            var pendingStatements = accountStatementRepository.findByFileUploadStatus(UploadStatusEnum.PENDING);
+            var pendingStatements = accountStatementRepository.findByFileUploadStatusAndIsDeleted(UploadStatusEnum.PENDING, false);
             if (pendingStatements.isPresent() && !pendingStatements.get().isEmpty()) {
                 pendingStatements.get().stream().forEach(statementEntity -> {
                     log.info("Deleting statements in s3 with key {}", statementEntity.getS3StatementKey());

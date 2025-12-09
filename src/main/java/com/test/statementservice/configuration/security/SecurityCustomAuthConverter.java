@@ -16,6 +16,7 @@ public class SecurityCustomAuthConverter implements Converter<Jwt, Collection<Gr
     public Collection<GrantedAuthority> convert(Jwt jwt) {
         String role = jwt.getClaimAsString("user_role");
         if (role == null) {
+            //default to public user
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));

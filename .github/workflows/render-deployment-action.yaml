@@ -31,28 +31,28 @@ jobs:
       - name: Build & Test
         run: mvn -B clean verify
 
-  deploy:
-    name: Deploy to Render
-    needs: build-test
-    runs-on: ubuntu-latest
-
-    # Only run deploy if branch is develop or main
-    if: |
-      github.ref == 'refs/heads/develop' ||
-      github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Select Render deploy hook based on branch
-        id: set-hook
-        run: |
-          if [ "${GITHUB_REF##*/}" = "develop" ]; then
-            echo "hook=${{ secrets.RENDER_STAGING_HOOK }}" >> $GITHUB_OUTPUT
-            echo "Deploying to Render STAGING..."
-          else
-            echo "hook=${{ secrets.RENDER_PROD_HOOK }}" >> $GITHUB_OUTPUT
-            echo "Deploying to Render PRODUCTION..."
-          fi
-
-      - name: Trigger Render Deployment
-        run: |
-          curl -X POST "${{ steps.set-hook.outputs.hook }}"
+#  deploy:
+#    name: Deploy to Render
+#    needs: build-test
+#    runs-on: ubuntu-latest
+#
+#    # Only run deploy if branch is develop or main
+#    if: |
+#      github.ref == 'refs/heads/develop' ||
+#      github.ref == 'refs/heads/main'
+#
+#    steps:
+#      - name: Select Render deploy hook based on branch
+#        id: set-hook
+#        run: |
+#          if [ "${GITHUB_REF##*/}" = "develop" ]; then
+#            echo "hook=${{ secrets.RENDER_STAGING_HOOK }}" >> $GITHUB_OUTPUT
+#            echo "Deploying to Render STAGING..."
+#          else
+#            echo "hook=${{ secrets.RENDER_PROD_HOOK }}" >> $GITHUB_OUTPUT
+#            echo "Deploying to Render PRODUCTION..."
+#          fi
+#
+#      - name: Trigger Render Deployment
+#        run: |
+#          curl -X POST "${{ steps.set-hook.outputs.hook }}"

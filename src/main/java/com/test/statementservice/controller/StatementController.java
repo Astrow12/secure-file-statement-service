@@ -1,6 +1,7 @@
 package com.test.statementservice.controller;
 
 
+import com.test.statementservice.exception.DocumentException;
 import com.test.statementservice.model.response.DocumentResponse;
 import com.test.statementservice.service.StatementService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,14 +32,29 @@ public class StatementController {
 
     private final StatementService statementService;
 
+    @Value("${statement.max-file-size}")
+    private Long allowedFileSize;
+
 
     @PostMapping(path = "/upload-statement", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Upload pdf statement for user")
-    public ResponseEntity<DocumentResponse> uploadAccountStatement(final @Valid @RequestParam("file") MultipartFile accountStatement,
-                                                                   final @Valid @NotNull @NotBlank @RequestParam("statementOwner")
+    public ResponseEntity<DocumentResponse> uploadAccountStatement(final @RequestParam(value = "file", required = true) MultipartFile accountStatement,
+                                                                   final @Valid @NotNull(message = "statementOwner cannot be null")
+                                                                   @NotBlank(message = "statementOwner cannot be empty") @RequestParam(value = "statementOwner", required = true)
                                                                    String fileOwner) {
+        isValid(accountStatement, allowedFileSize);
         log.trace("uploadAccountStatement");
         return ResponseEntity.ok(statementService.uploadAccountStatement(fileOwner, accountStatement));
+    }
+
+    private void isValid(MultipartFile fileToUpload, Long allowedSize) {
+        log.info("Validating file for upload");
+        if (fileToUpload == null || fileToUpload.isEmpty() ||
+                !fileToUpload.getContentType().equalsIgnoreCase((MediaType.APPLICATION_PDF_VALUE))) {
+            log.error("File for upload has failed validations");
+            throw new DocumentException(HttpStatus.BAD_REQUEST, "Invalid file for upload");
+
+        }
     }
 
 

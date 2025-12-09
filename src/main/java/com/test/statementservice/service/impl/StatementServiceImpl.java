@@ -14,7 +14,6 @@ import com.test.statementservice.web.UserStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,9 +41,6 @@ public class StatementServiceImpl implements StatementService {
     public DocumentResponse uploadAccountStatement(String fileOwner, MultipartFile statementFile) {
         log.info("Uploading statement from user: {}", userStore.getUserId());
         try {
-            if (!statementFile.getContentType().equalsIgnoreCase(MediaType.APPLICATION_PDF_VALUE)) {
-                throw new IllegalArgumentException("Only PDF statements are allowed");
-            }
             var checkSum = StatementCheckSumUtil.calculateChecksum(statementFile);
             if (isFileAlreadyUploaded(checkSum)) {
                 throw new DuplicateRequestException("File already exists");
@@ -79,7 +75,7 @@ public class StatementServiceImpl implements StatementService {
 
 
     private boolean isFileAlreadyUploaded(byte[] checkSum) throws Exception {
-        var isCheckSumFound = accountStatementRepository.findByStatementChecksum(checkSum);
+        var isCheckSumFound = accountStatementRepository.findByStatementChecksumAndIsDeleted(checkSum, false);
         if (isCheckSumFound.isPresent()) {
             return true;
         }

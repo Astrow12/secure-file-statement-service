@@ -16,5 +16,5 @@ import java.util.List;
 @NoArgsConstructor
 public class StatementsResponse {
 
-    private List<DocumentDto> documentDtoList;
+    private List<DocumentDto> documents;
 }

@@ -54,10 +54,10 @@ public class AccountStatementEntity {
     @Column(name = "deleted")
     private boolean isDeleted;
 
-    @Column(name = "checksum", unique = true)
+    @Column(name = "checksum")
     private byte[] statementChecksum;
 
-    @Column(name = "user_id", unique = true)
+    @Column(name = "user_id")
     private String userId;
 
     @Column(name = "created_date")
