@@ -2,7 +2,6 @@ package com.test.statementservice.service.impl;
 
 import com.test.statementservice.enums.UploadStatusEnum;
 import com.test.statementservice.exception.ClientException;
-import com.test.statementservice.exception.DocumentException;
 import com.test.statementservice.mapper.StatementMapper;
 import com.test.statementservice.model.response.SignedStatementResponse;
 import com.test.statementservice.model.response.StatementsResponse;
@@ -40,7 +39,6 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Transactional(readOnly = true)
-    @Cacheable
     @Override
     public SignedStatementResponse generateAccountStatementPDF(Long documentId) {
         log.info("Generating account statement for user: {}", userStore.getUserId());
@@ -68,12 +66,13 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Cacheable
     public StatementsResponse getAccountStatements(LocalDateTime startDate, LocalDateTime endDate) {
         log.info("Retrieving account statements for user: {}", userStore.getUserId());
         try {
             var startDateWithNoTime = startDate.toLocalDate().atStartOfDay();
             var endDateWithNoTime = endDate.toLocalDate().atStartOfDay();
-            var savedAccountStatement = accountStatementRepository.findByStatementsForSpecificDuration(userStore.getUserId(), startDateWithNoTime, endDateWithNoTime);
+            var savedAccountStatement = accountStatementRepository.findByStatementsForSpecificDuration(userStore.getUserId(), UploadStatusEnum.UPLOADED, startDateWithNoTime, endDateWithNoTime);
             if (savedAccountStatement.isPresent() && !savedAccountStatement.get().isEmpty()) {
                 return StatementsResponse.builder()
                         .documentDtoList(statementMapper.convertToListOfDocumentDto(savedAccountStatement.get()))

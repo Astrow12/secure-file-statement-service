@@ -20,8 +20,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse, final Object handler) throws Exception {
 
-        log.info("header interceptor has intercepted the following uri: {}", servletRequest.getRequestURI());
-        // Optional: get raw token from Authorization header
+        log.debug("header interceptor has intercepted the following uri: {}", servletRequest.getRequestURI());
         String authHeader = servletRequest.getHeader("Authorization");
         String rawToken = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -30,7 +29,6 @@ public class HeaderInterceptor implements HandlerInterceptor {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = null;
-
         if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
             userId = jwt.getClaimAsString("sub"); // Supabase user ID
             userStore.setUserId(userId);
@@ -38,11 +36,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
             throw new JwtMissingException(HttpStatus.UNAUTHORIZED, "JWT token missing or invalid");
         }
 
-        // Optional: logging
-        System.out.println("Bearer token: " + rawToken);
-        System.out.println("User ID: " + userId);
-
-        return true; // continue processing
+        return true;
     }
 
 }

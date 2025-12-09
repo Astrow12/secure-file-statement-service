@@ -51,11 +51,11 @@ public class StatementServiceImpl implements StatementService {
             }
             String key = getFileName(fileOwner);
             var savedAccountStatement = accountStatementRepository.save(statementMapper.convertToStatementEntity(
-                    statementMapper.createAccountStatementDto(key, UploadStatusEnum.PENDING, statementFile.getName(), checkSum.getBytes(), fileOwner)));
+                    statementMapper.createAccountStatementDto(key, UploadStatusEnum.PENDING, statementFile.getOriginalFilename(), checkSum, fileOwner)));
             s3IntegrationService.uploadPdfToS3(key, statementFile.getBytes());
-            accountStatementRepository.save(statementMapper.convertToStatementEntity(
-                    statementMapper.createAccountStatementDto(key, UploadStatusEnum.UPLOADED, statementFile.getName(), checkSum.getBytes(), fileOwner)));
-            return new DocumentResponse(savedAccountStatement.getDocumentId(), statementFile.getName());
+            savedAccountStatement.setFileUploadStatus(UploadStatusEnum.UPLOADED);
+            accountStatementRepository.save(savedAccountStatement);
+            return new DocumentResponse(savedAccountStatement.getDocumentId(), statementFile.getOriginalFilename());
 
         } catch (DuplicateRequestException ex) {
             log.error("File already has been uploaded", ex);
@@ -74,12 +74,12 @@ public class StatementServiceImpl implements StatementService {
     private String getFileName(String fileUser) {
         log.info("Generate unique filename for owner {}", fileUser);
         var accountUploadDate = LocalDate.now();
-        return fileUser + "-" + ACCOUNT_STATEMENT + "-" + accountUploadDate.getDayOfMonth() + "_" + accountUploadDate.getYear();
+        return fileUser + "-" + ACCOUNT_STATEMENT + "-" + accountUploadDate.getMonth() + "_" + accountUploadDate.getYear();
     }
 
 
-    private boolean isFileAlreadyUploaded(String checkSum) throws Exception {
-        var isCheckSumFound = accountStatementRepository.findByStatementChecksum(checkSum.getBytes());
+    private boolean isFileAlreadyUploaded(byte[] checkSum) throws Exception {
+        var isCheckSumFound = accountStatementRepository.findByStatementChecksum(checkSum);
         if (isCheckSumFound.isPresent()) {
             return true;
         }

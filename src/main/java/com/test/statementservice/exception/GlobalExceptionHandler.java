@@ -31,8 +31,19 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST);
     }
 
+
+    @ExceptionHandler({JwtMissingException.class})
+    protected ResponseEntity<Object> handleJwtMissingException(final JwtMissingException ex, final WebRequest request) {
+        return new ResponseEntity<>(
+                ErrorResponse.builder()
+                        .date(OffsetDateTime.now())
+                        .message(ex.getMessage())
+                        .build(),
+                HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler({DocumentException.class})
-    protected ResponseEntity<Object> handleStatementExceptions(final DocumentException ex, final WebRequest request) {
+    protected ResponseEntity<Object> handleDocumentException(final DocumentException ex, final WebRequest request) {
         return new ResponseEntity<>(
                 ErrorResponse.builder()
                         .date(OffsetDateTime.now())
@@ -50,6 +61,7 @@ public class GlobalExceptionHandler {
                         .build(),
                 ex.getStatus());
     }
+
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     protected ResponseEntity<Object> handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex, final WebRequest request) {

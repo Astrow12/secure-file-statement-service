@@ -6,6 +6,8 @@ import com.test.statementservice.persistance.listener.AccountStatementListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,7 +26,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(schema = "statementsdb", name = "account_statement")
+@Table(schema = "acc_statementsdb", name = "account_statement")
 @Entity
 @EntityListeners(AccountStatementListener.class)
 public class AccountStatementEntity {
@@ -42,6 +44,7 @@ public class AccountStatementEntity {
     private String statementUrl;
 
     @Column(name = "upload_status")
+    @Enumerated(EnumType.STRING)
     private UploadStatusEnum fileUploadStatus;
 
 
@@ -51,7 +54,6 @@ public class AccountStatementEntity {
     @Column(name = "deleted")
     private boolean isDeleted;
 
-    @Lob //For mapping as binary obj -> bytea
     @Column(name = "checksum", unique = true)
     private byte[] statementChecksum;
 

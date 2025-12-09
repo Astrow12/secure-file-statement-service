@@ -27,7 +27,6 @@ import java.time.Duration;
 public class S3IntegrationServiceImpl implements S3IntegrationService {
 
     private final S3Client supabaseS3Client;
-    private final S3IntegrationProperties.SupaBaseS3Config s3IntegrationConfig;
     private final S3Presigner supabaseS3Presigner;
     @Value("${statement.s3-integration.bucket}")
     private String bucketName;

@@ -25,6 +25,7 @@ EXPOSE 8081
 
 # Setting JVM options for proper garbage collection and memory management
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport -XX:+UseG1GC"
+ENV SPRING_PROFILE=prod
 
 # Add Spring Boot actuator health check endpoint
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

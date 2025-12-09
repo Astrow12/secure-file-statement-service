@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data/statements
+      - pgdata:/var/lib/postgresql/statements/
 
 # Named volume to persist database data
 volumes:

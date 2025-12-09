@@ -1,6 +1,6 @@
---  Books table
+--  account_statement table
 create table if not exists account_statement (
-        id bigint not null auto_increment,
+        id serial primary key,
         s3_path_key varchar(255) not null,
         signed_statement_url varchar(255),
         file_name varchar(255) not null,
@@ -9,8 +9,7 @@ create table if not exists account_statement (
         deleted boolean default false,
         checksum bytea not null,
         created_date timestamp not null,
-        modified_date timestamp not null,
-        constraint id_key primary key (id)
+        modified_date timestamp not null
     );
 
 

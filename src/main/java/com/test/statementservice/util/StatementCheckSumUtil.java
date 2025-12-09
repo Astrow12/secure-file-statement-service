@@ -10,7 +10,7 @@ public class StatementCheckSumUtil {
 
     private static final String CHECK_SUM_ALGO = "SHA-256";
 
-    public static String calculateChecksum(MultipartFile uploadedFile) throws Exception {
+    public static byte[] calculateChecksum(MultipartFile uploadedFile) throws Exception {
         MessageDigest digest = MessageDigest.getInstance(CHECK_SUM_ALGO);
 
         try (InputStream is = uploadedFile.getInputStream()) {
@@ -20,6 +20,6 @@ public class StatementCheckSumUtil {
                 digest.update(buffer, 0, bytesRead);
             }
         }
-        return HexFormat.of().formatHex(digest.digest());
+        return digest.digest();
     }
 }

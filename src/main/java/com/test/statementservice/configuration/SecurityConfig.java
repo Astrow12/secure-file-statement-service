@@ -26,10 +26,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/api/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-ui/info").permitAll()
+                        .requestMatchers("/swagger-ui/info/swagger-config").permitAll()
                         .requestMatchers("/actuator/health/**").permitAll()
                         .requestMatchers("/statement/**").hasRole("ADMIN")
-                        .requestMatchers("/client/**").hasRole("USER")
+                        .requestMatchers("/client/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt

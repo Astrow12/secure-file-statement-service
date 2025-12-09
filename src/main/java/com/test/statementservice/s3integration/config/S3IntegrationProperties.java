@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(value = "statement.s3-integration")
 public class S3IntegrationProperties {
 
-    private SupaBaseS3Config supaBaseS3Config;
+    private SupaBaseS3Config supabaseS3Config;
 
 
     @Data

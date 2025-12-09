@@ -13,7 +13,8 @@ public class HeaderInterceptorConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry interceptorRegistry) {
-        interceptorRegistry.addInterceptor(headerInterceptor(userStore())).excludePathPatterns("/swagger-ui/**");
+        interceptorRegistry.addInterceptor(headerInterceptor(userStore())).excludePathPatterns("/api/swagger-ui/**",
+                "/swagger-ui/info/**");
     }
 
     @Bean

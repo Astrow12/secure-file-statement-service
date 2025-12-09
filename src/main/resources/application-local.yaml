@@ -12,9 +12,10 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: https://vmfsbcgqujxhbedjlzhk.supabase.co/auth/v1/certs #supabase
+          jwk-set-uri: https://vmfsbcgqujxhbedjlzhk.supabase.co/auth/v1/.well-known/jwks.json
+          jws-algorithms: ES256 #supabase
   datasource:
-    url: jdbc:postgresql://localhost:3306/statementsdb
+    url: jdbc:postgresql://localhost:5432/statementsdb
     driver-class-name: org.postgresql.Driver
     username: rootuser
     password: root
@@ -30,20 +31,23 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        default_schema: acc_statementsdb
     hibernate:
       ddl-auto: none
   flyway:
     enabled: true
     locations: classpath:db/migration
-    schema: statementsdb
+    default-schema: acc_statementsdb
+    schema: acc_statementsdb
     baseline-on-migrate: true
 
 statement:
   s3-integration:
-    endpoint: "https://vmfsbcgqujxhbedjlzhk.storage.supabase.co/storage/v1/s3"   # Must be s3 endpoint
-    region: "us-east-1"                                         # Supabase forces us-east-1
-    access-key: "487c261456c020f16e137f5934c6cc4f"
-    secret-key: "da779bb492a8586e42634639430107650010fa32c2322f2e62ee16dd27d307d1"
+    supabase-s3-config:
+      endpoint: "https://vmfsbcgqujxhbedjlzhk.storage.supabase.co/storage/v1/s3"   # Must be s3 endpoint
+      region: "us-east-1"                                         # Supabase forces us-east-1
+      access-key: "487c261456c020f16e137f5934c6cc4f"
+      secret-key: "da779bb492a8586e42634639430107650010fa32c2322f2e62ee16dd27d307d1"
     bucket: "account-statements"
     signed-expiration: PT2H
 scheduler:
