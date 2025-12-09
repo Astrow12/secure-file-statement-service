@@ -48,7 +48,7 @@ statement:
     signed-expiration: PT2H
 scheduler:
   cron:
-    delete-pending-uploads: 0 0 * * * * #todo: Please configure to what works for you
+    delete-pending-uploads: 0 0 * * * *
 
 
 

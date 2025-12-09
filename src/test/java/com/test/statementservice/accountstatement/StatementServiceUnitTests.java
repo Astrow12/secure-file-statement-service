@@ -39,6 +39,6 @@ class StatementServiceUnitTests {
 
 	@BeforeEach
 	void setUp() {
-		Mockito.when(mockedUserStore.getUserName()).thenReturn("TestUser");
+		Mockito.when(mockedUserStore.getUserId()).thenReturn("TestUser");
 	}
 }
