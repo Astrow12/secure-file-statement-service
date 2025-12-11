@@ -25,20 +25,17 @@ API meant to upload and retrieve customer account statements using REST.
     - Add any necessary certificates for secure communication.
 
 2. **Push to main branch and github pipeline to deploy to Render**
-   - Render can manage horizontal scaling as well as act as a load balancer.
+   - (Optional) Render can manage horizontal scaling as well as act as a load balancer.
 
-3. **Add application yaml as application-prod.yaml for PROD configs on render**
-
-4. **CI/CD Pipeline**
+3. **CI/CD Pipeline**
     - Create GitHub Actions workflows to build, validate, test, and deploy the application.
-    - The deploy action should build a Docker image and push it to a container registry accessible by GitHub.
 
-5. **Kubernetes & ArgoCD**
+4. **Kubernetes & ArgoCD**
     - Ensure a Kubernetes cluster is running with proper routing policies, load balancer/API gateway (e.g., Nginx).
     - Configure ArgoCD to monitor the container registry and automatically deploy the latest image to the appropriate namespace.
     - Verify deployment via health checks and confirm that the service is accessible through the Swagger UI URL.
 
-6. **Database Considerations**
+5. **Database Considerations**
     - For testing, you can create a pod using the same Postgres image from `docker-compose.yaml`.
 
 ---
