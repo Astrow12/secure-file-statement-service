@@ -27,6 +27,7 @@ services:
      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/statementsdb
      SPRING_DATASOURCE_USERNAME: rootuser
      SPRING_DATASOURCE_PASSWORD: root
+     SPRING_PROFILES_ACTIVE: local
     ports:
       - "9192:9192" #It has been set it on applicaton yaml
       - "8081:8081"
