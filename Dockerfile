@@ -1,3 +1,21 @@
+# --------------------
+# 1. Build Stage
+# --------------------
+FROM eclipse-temurin:21-jdk-jammy as builder
+
+WORKDIR /build
+
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+RUN chmod +x mvnw
+RUN ./mvnw -q -DskipTests package
+
+# --------------------
+# 2. Runtime Stage
+# --------------------
 FROM eclipse-temurin:21-jdk-jammy
 
 # Install curl for health checks
@@ -9,12 +27,8 @@ RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 # Set working directory
 WORKDIR /app
 
-# Copy Maven/Gradle build artifact into container
-# Assuming the jar is in target folder and named app.jar
-COPY target/statementapi-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder /build/target/*.jar app.jar
 
-
-# Change ownership to non-root user
 RUN chown -R appuser:appgroup /app
 
 # Switch to non-root user
