@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: pg_container
+    restart: always
+    environment:
+      POSTGRES_USER: rootuser
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: statementsdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/statements/
+    networks:
+      - app-network
+
+
+  statementapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: statementapi
+    restart: always
+    environment:
+     SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/statementsdb
+     SPRING_DATASOURCE_USERNAME: rootuser
+     SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "9192:9192" #It has been set it on applicaton yaml
+      - "8081:8081"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+
+# Shared network
+networks:
+  app-network:
+    driver: bridge
