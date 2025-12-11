@@ -30,13 +30,8 @@ API meant to upload and retrieve customer account statements using REST.
 3. **CI/CD Pipeline**
     - Create GitHub Actions workflows to build, validate, test, and deploy the application.
 
-4. **Kubernetes & ArgoCD**
-    - Ensure a Kubernetes cluster is running with proper routing policies, load balancer/API gateway (e.g., Nginx).
-    - Configure ArgoCD to monitor the container registry and automatically deploy the latest image to the appropriate namespace.
-    - Verify deployment via health checks and confirm that the service is accessible through the Swagger UI URL.
-
-5. **Database Considerations**
-    - For testing, you can create a pod using the same Postgres image from `docker-compose.yaml`.
+4**Database Considerations**
+    - Create database and change env variables on render.
 
 ---
 
