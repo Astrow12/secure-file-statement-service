@@ -6,11 +6,13 @@ API meant to upload and retrieve customer account statements using REST.
 ## Getting Started
 
 - Install Docker or Rancher Desktop to run the Postgres database.
-- Once Docker is running on your PC, run the `docker-compose.yaml` file located in the `src/resource` folder of the project.
-- Once the database is running, you can import the collection and its environment (`Statements API.postman_collection.json`, `Statement Api Local Dev.postman_environment.json`) for testing the API, or access the Swagger UI on your localhost by visiting:  
+- To test and build project, run 'mvn build, mvn test and mvn package', mvn package will create the jar.
+- Once Docker is running on your PC, run the `docker-compose.yaml` and it will run the database and the service as well
+- Access the Swagger UI on your localhost by visiting:  
   `http://localhost:9192/api/swagger-ui/index.html`
 
 ---
+
 
 ## Deployment
 

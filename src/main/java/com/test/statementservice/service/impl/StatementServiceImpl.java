@@ -46,8 +46,9 @@ public class StatementServiceImpl implements StatementService {
                 throw new DuplicateRequestException("File already exists");
             }
             String key = getFileName(fileOwner);
-            var savedAccountStatement = accountStatementRepository.save(statementMapper.convertToStatementEntity(
-                    statementMapper.createAccountStatementDto(key, UploadStatusEnum.PENDING, statementFile.getOriginalFilename(), checkSum, fileOwner)));
+            var statementDto = statementMapper.createAccountStatementDto(key, UploadStatusEnum.PENDING, statementFile.getOriginalFilename(), checkSum, fileOwner);
+            var statementEntity = statementMapper.convertToStatementEntity(statementDto);
+            var savedAccountStatement = accountStatementRepository.save(statementEntity);
             s3IntegrationService.uploadPdfToS3(key, statementFile.getBytes());
             savedAccountStatement.setFileUploadStatus(UploadStatusEnum.UPLOADED);
             accountStatementRepository.save(savedAccountStatement);

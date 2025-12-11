@@ -11,7 +11,6 @@ import java.util.UUID;
 @Data
 @Builder
 public class AccountStatementDto {
-    private String statementUrl;
     private String statementFileName;
     private String s3StatementKey;
     private boolean isDeleted;

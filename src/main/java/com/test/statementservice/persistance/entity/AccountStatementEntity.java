@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(schema = "acc_statementsdb", name = "account_statement")
+@Table( name = "account_statement")
 @Entity
 @EntityListeners(AccountStatementListener.class)
 public class AccountStatementEntity {
@@ -40,8 +40,6 @@ public class AccountStatementEntity {
     @Column(name = "s3_path_key")
     private String s3StatementKey;
 
-    @Column(name = "signed_statement_url")
-    private String statementUrl;
 
     @Column(name = "upload_status")
     @Enumerated(EnumType.STRING)

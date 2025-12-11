@@ -1,30 +1,24 @@
 package com.test.statementservice.accountstatement;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.test.statementservice.StatementApiApplication;
+import com.test.statementservice.config.StatementConfigTest;
+import com.test.statementservice.controller.StatementController;
 import com.test.statementservice.service.StatementService;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@Slf4j
-@SpringBootTest(classes = StatementApiApplication.class)
+@WebMvcTest(controllers = StatementController.class)
+@Import(StatementConfigTest.class)
 @ActiveProfiles("test")
-@AutoConfigureMockMvc
-@ExtendWith(MockitoExtension.class)
 class StatementApiTests {
 
     @Autowired
@@ -33,6 +27,16 @@ class StatementApiTests {
     @MockBean
     private StatementService mockedStatementService;
 
-    @Autowired
-    ObjectMapper objectMapper;
+
+    @Test
+    void uploadDocumentTest() throws Exception {
+        var testFile = StatementApiTestUtils.successMultipartResponse();
+        Mockito.when(mockedStatementService.uploadAccountStatement(StatementApiTestUtils.COMMON_USER_ID, testFile))
+                .thenReturn(StatementApiTestUtils.getSuccessDocumentResponse());
+
+        mockMvc.perform(multipart("/statement/v1/upload-statement")
+                        .file(testFile)
+                        .param("statementOwner", StatementApiTestUtils.COMMON_USER_ID))
+                .andExpect(status().isOk());
+    }
 }
