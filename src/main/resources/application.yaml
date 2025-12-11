@@ -55,7 +55,7 @@ statement:
     signed-expiration: PT1H
 scheduler:
   cron:
-    delete-pending-uploads: 0 0 * * * *
+    delete-pending-uploads: 0 * * * * *
 
 
 

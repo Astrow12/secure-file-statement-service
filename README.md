@@ -1,7 +1,9 @@
 # Account Statement Api
 
 API meant to upload and retrieve customer account statements using REST.
-
+## NB
+- I am using Supabase for s3 and authentication, so you will need specific roles to upload documents. Please ask for the credentials.
+- I set up role based jwt tokens in supabase and added the roles as claims in the jwt token.
 
 ## Getting Started
 
